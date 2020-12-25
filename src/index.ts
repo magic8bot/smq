@@ -2,4 +2,6 @@ import { config } from 'dotenv'
 config()
 
 export * from './channels'
-export * from './smq'
+import { Smq } from './smq'
+
+export const smq = new Smq()
