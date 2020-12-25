@@ -27,10 +27,14 @@ export class Smq {
     return rsmq.sendMessageAsync({ qname, message: JSON.stringify(message) })
   }
 
-  async receiveMessage<T>(qname: Channel): Promise<T | false> {
-    const { message } = (await rsmq.receiveMessageAsync({ qname })) as RedisSMQ.QueueMessage
+  async receiveMessage<T>(qname: Channel): Promise<{ id: string; message: T | false }> {
+    const { id, message } = (await rsmq.receiveMessageAsync({ qname })) as RedisSMQ.QueueMessage
 
-    return this.decode(message)
+    return { id, message: this.decode(message) }
+  }
+
+  changeMessageVisibility(qname: string, id: string, vt: number) {
+    return rsmq.changeMessageVisibilityAsync({ qname, id, vt })
   }
 
   deleteMessage(qname: Channel, id: string) {
