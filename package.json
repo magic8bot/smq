@@ -1,6 +1,6 @@
 {
   "name": "@magic8bot/smq",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Cryptocurrency trading bot",
   "bugs": "https://github.com/magic8bot/smq/issues",
   "license": "MIT",
@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "dotenv": "^8.2.0",
+    "redis": "^3.0.2",
     "rsmq": "^0.12.2"
   },
   "devDependencies": {
