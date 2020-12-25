@@ -37,21 +37,28 @@ export class Smq {
     return rsmq.deleteMessageAsync({ qname, id })
   }
 
-  subscribe<T>(event: Event, cb: (data: T | false) => null) {
+  subscribe<T>(event: Event, suffix: string, cb: (data: T | false) => null) {
+    const channel = this.getChannel(suffix, event)
+
     const handler = (_, message: string) => {
       const payload = this.decode<T>(message)
       cb(payload)
     }
 
-    client.subscribe(event, handler)
+    client.subscribe(channel, handler)
 
-    return () => client.unsubscribe(event, handler)
+    return () => client.unsubscribe(channel, handler)
   }
 
-  publish(event: Event, message: Record<string, any>) {
+  publish(event: Event, suffix: string, message: Record<string, any>) {
     const payload = JSON.stringify(message)
+    const channel = this.getChannel(suffix, event)
 
-    client.publish(event, payload)
+    client.publish(channel, payload)
+  }
+
+  private getChannel(suffix: string, event: Event) {
+    return !suffix ? event : `${event}.${suffix}`
   }
 
   private decode<T>(message: string): T | false {
